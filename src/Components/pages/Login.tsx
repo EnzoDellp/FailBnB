@@ -44,7 +44,7 @@ function Login() {
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600 max-w">
           O{" "}
-          <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+          <a href="/Register" className="font-medium text-blue-600 hover:text-blue-500">
             Crea tu Cuenta en FailBnB
           </a>
         </p>
