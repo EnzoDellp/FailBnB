@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 type FormData = {
   nombre: string;
@@ -15,8 +16,9 @@ function Register() {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm<FormData>();
+
+  const navigate = useNavigate();
 
   const onSubmit = async (data: FormData) => {
     if (data.password !== data.confirmPassword) {
@@ -25,15 +27,24 @@ function Register() {
     }
 
     try {
-      await axios.post("http://localhost:3000/api/auth/register", {
+      const response = await axios.post("http://localhost:3000/api/auth/register", {
         nombre: data.nombre,
         apellido: data.apellido,
         email: data.email,
         pass: data.password,
       });
 
-      toast.success("Cuenta creada exitosamente");
-      window.location.href = "/login";
+      const usuario = response.data.usuario;
+
+      // Guardar usuario logueado
+      localStorage.setItem("usuario", JSON.stringify(usuario));
+
+      toast.success("Cuenta creada exitosamente 🚀");
+
+      // Redirigir al home después de un breve delay
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
     } catch (error: any) {
       if (error.response?.data?.error) {
         toast.error(`Error: ${error.response.data.error}`);
@@ -70,11 +81,9 @@ function Register() {
                 type="text"
                 placeholder="Tu nombre"
                 {...register("nombre", { required: "Este campo es obligatorio" })}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               />
-              {errors.nombre && (
-                <p className="mt-1 text-sm text-red-600">{errors.nombre.message}</p>
-              )}
+              {errors.nombre && <p className="text-red-600 text-sm">{errors.nombre.message}</p>}
             </div>
 
             {/* Apellido */}
@@ -87,11 +96,9 @@ function Register() {
                 type="text"
                 placeholder="Tu apellido"
                 {...register("apellido", { required: "Este campo es obligatorio" })}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               />
-              {errors.apellido && (
-                <p className="mt-1 text-sm text-red-600">{errors.apellido.message}</p>
-              )}
+              {errors.apellido && <p className="text-red-600 text-sm">{errors.apellido.message}</p>}
             </div>
 
             {/* Email */}
@@ -102,13 +109,11 @@ function Register() {
               <input
                 id="email"
                 type="email"
-                placeholder="Tu dirección Email"
+                placeholder="Tu dirección de email"
                 {...register("email", { required: "Este campo es obligatorio" })}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-              )}
+              {errors.email && <p className="text-red-600 text-sm">{errors.email.message}</p>}
             </div>
 
             {/* Contraseña */}
@@ -119,29 +124,27 @@ function Register() {
               <input
                 id="password"
                 type="password"
-                placeholder="Tu contraseña"
+                placeholder="Elegí una contraseña segura"
                 {...register("password", { required: "La contraseña es requerida" })}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               />
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
-              )}
+              {errors.password && <p className="text-red-600 text-sm">{errors.password.message}</p>}
             </div>
 
-            {/* Confirmar contraseña */}
+            {/* Confirmar Contraseña */}
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                Confirmar Contraseña
+                Confirmar contraseña
               </label>
               <input
                 id="confirmPassword"
                 type="password"
                 placeholder="Repetí tu contraseña"
                 {...register("confirmPassword", { required: "Repetí la contraseña" })}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               />
               {errors.confirmPassword && (
-                <p className="mt-1 text-sm text-red-600">{errors.confirmPassword.message}</p>
+                <p className="text-red-600 text-sm">{errors.confirmPassword.message}</p>
               )}
             </div>
 
@@ -149,7 +152,7 @@ function Register() {
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-600 hover:bg-pink-700 focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md text-white bg-pink-600 hover:bg-pink-700"
               >
                 Registrarme
               </button>
