@@ -1,6 +1,8 @@
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 
 type FormData = {
   email: string;
@@ -35,6 +37,8 @@ function Login() {
       }
     }
   };
+
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -103,12 +107,13 @@ function Login() {
             </div>
 
             <div className="text-sm text-center">
-              <a
-                href="#"
-                className="font-medium text-blue-600 hover:text-blue-500"
-              >
-                ¿Olvidaste tu contraseña?
-              </a>
+              <button
+  type="button"
+  onClick={() => navigate("/recuperar")}
+  className="text-sm text-blue-600 hover:underline mt-2"
+>
+  ¿Olvidaste tu contraseña?
+</button>
             </div>
 
             <div>

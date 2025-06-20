@@ -4,6 +4,7 @@ import CardDetail from "../pages/CardDetail";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Profile from "../pages/Profile";
+import Recuperar from "../pages/Recuperar";
 
 function AppRoutes() {
   return (
@@ -13,6 +14,7 @@ function AppRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/perfil" element={<Profile />} /> 
+      <Route path="/recuperar" element={<Recuperar />} /> 
     </Routes>
   );
 }
