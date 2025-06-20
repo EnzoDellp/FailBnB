@@ -3,6 +3,8 @@ import Home from "../pages/Home";
 import CardDetail from "../pages/CardDetail";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+import Profile from "../pages/Profile";
+
 function AppRoutes() {
   return (
     <Routes>
@@ -10,8 +12,10 @@ function AppRoutes() {
       <Route path="/card/:id" element={<CardDetail />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/perfil" element={<Profile />} /> 
     </Routes>
   );
 }
 
 export default AppRoutes;
+

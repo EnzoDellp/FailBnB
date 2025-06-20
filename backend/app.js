@@ -1,25 +1,25 @@
 const express = require("express");
-const cors = require("cors"); //Error de CORS
+const cors = require("cors");
+
 const reservasRoutes = require("./routes/reservas.routes");
+const propiedadesRoutes = require("./routes/propiedades.routes");
+const authRoutes = require("./routes/auth.routes");
+const usuariosRoutes = require("./routes/usuarios.routes");
 
 const app = express();
-// Solucionar el proble de de CORS
-app.use(
-  cors({
-    origin: "http://localhost:5173", // permite al fornt acceder
-    credentials: true,
-  })
-);
+
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true,
+}));
 
 app.use(express.json());
 
 app.use("/api/reservas", reservasRoutes);
+app.use("/api/propiedades", propiedadesRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/usuarios", usuariosRoutes);  // <-- Agregar esta línea
 
 app.listen(3000, () => {
   console.log("Servidor corriendo en http://localhost:3000");
 });
-const propiedadesRoutes = require("./routes/propiedades.routes");
-app.use("/api/propiedades", propiedadesRoutes);
-
-const authRoutes = require("./routes/auth.routes");
-app.use("/api/auth", authRoutes);

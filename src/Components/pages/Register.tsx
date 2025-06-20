@@ -1,14 +1,15 @@
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 type FormData = {
   nombre: string;
   apellido: string;
   email: string;
+  telefono: string;
   password: string;
   confirmPassword: string;
+  es_anfitrion: boolean;
 };
 
 function Register() {
@@ -16,9 +17,8 @@ function Register() {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<FormData>();
-
-  const navigate = useNavigate();
 
   const onSubmit = async (data: FormData) => {
     if (data.password !== data.confirmPassword) {
@@ -31,20 +31,20 @@ function Register() {
         nombre: data.nombre,
         apellido: data.apellido,
         email: data.email,
+        telefono: data.telefono || null,
         pass: data.password,
+        es_anfitrion: !!data.es_anfitrion,
       });
 
       const usuario = response.data.usuario;
+      toast.success("Cuenta creada exitosamente");
 
-      // Guardar usuario logueado
       localStorage.setItem("usuario", JSON.stringify(usuario));
 
-      toast.success("Cuenta creada exitosamente 🚀");
-
-      // Redirigir al home después de un breve delay
+      // Redirige al home con breve pausa
       setTimeout(() => {
-        navigate("/");
-      }, 2000);
+        window.location.href = "/";
+      }, 1500);
     } catch (error: any) {
       if (error.response?.data?.error) {
         toast.error(`Error: ${error.response.data.error}`);
@@ -78,12 +78,11 @@ function Register() {
               </label>
               <input
                 id="nombre"
-                type="text"
                 placeholder="Tu nombre"
                 {...register("nombre", { required: "Este campo es obligatorio" })}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
               />
-              {errors.nombre && <p className="text-red-600 text-sm">{errors.nombre.message}</p>}
+              {errors.nombre && <p className="text-sm text-red-600">{errors.nombre.message}</p>}
             </div>
 
             {/* Apellido */}
@@ -93,12 +92,13 @@ function Register() {
               </label>
               <input
                 id="apellido"
-                type="text"
                 placeholder="Tu apellido"
                 {...register("apellido", { required: "Este campo es obligatorio" })}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
               />
-              {errors.apellido && <p className="text-red-600 text-sm">{errors.apellido.message}</p>}
+              {errors.apellido && (
+                <p className="text-sm text-red-600">{errors.apellido.message}</p>
+              )}
             </div>
 
             {/* Email */}
@@ -109,11 +109,24 @@ function Register() {
               <input
                 id="email"
                 type="email"
-                placeholder="Tu dirección de email"
+                placeholder="ejemplo@mail.com"
                 {...register("email", { required: "Este campo es obligatorio" })}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
               />
-              {errors.email && <p className="text-red-600 text-sm">{errors.email.message}</p>}
+              {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
+            </div>
+
+            {/* Teléfono */}
+            <div>
+              <label htmlFor="telefono" className="block text-sm font-medium text-gray-700">
+                Teléfono
+              </label>
+              <input
+                id="telefono"
+                placeholder="Tu número de contacto"
+                {...register("telefono")}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+              />
             </div>
 
             {/* Contraseña */}
@@ -124,35 +137,50 @@ function Register() {
               <input
                 id="password"
                 type="password"
-                placeholder="Elegí una contraseña segura"
+                placeholder="Tu contraseña"
                 {...register("password", { required: "La contraseña es requerida" })}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
               />
-              {errors.password && <p className="text-red-600 text-sm">{errors.password.message}</p>}
+              {errors.password && (
+                <p className="text-sm text-red-600">{errors.password.message}</p>
+              )}
             </div>
 
-            {/* Confirmar Contraseña */}
+            {/* Confirmar contraseña */}
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                Confirmar contraseña
+                Confirmar Contraseña
               </label>
               <input
                 id="confirmPassword"
                 type="password"
                 placeholder="Repetí tu contraseña"
                 {...register("confirmPassword", { required: "Repetí la contraseña" })}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
               />
               {errors.confirmPassword && (
-                <p className="text-red-600 text-sm">{errors.confirmPassword.message}</p>
+                <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>
               )}
+            </div>
+
+            {/* ¿Es anfitrión? */}
+            <div className="flex items-center">
+              <input
+                id="es_anfitrion"
+                type="checkbox"
+                {...register("es_anfitrion")}
+                className="mr-2"
+              />
+              <label htmlFor="es_anfitrion" className="text-sm text-gray-700">
+                Quiero ser Anfitrión
+              </label>
             </div>
 
             {/* Botón */}
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md text-white bg-pink-600 hover:bg-pink-700"
+                className="w-full py-2 px-4 bg-pink-600 text-white rounded-md hover:bg-pink-700"
               >
                 Registrarme
               </button>
