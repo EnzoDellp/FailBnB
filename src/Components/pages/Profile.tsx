@@ -91,7 +91,7 @@ function Perfil() {
 
       await axios.put(
         `http://localhost:3000/api/usuarios/${usuario.id}`,
-        updatedUser
+        updatedUser,
       );
 
       // Actualizar estado y localStorage:
