@@ -3,7 +3,7 @@ import Card from "../../Components/Card";
 import Header from "../../Components/Header";
 import Hero from "../../Components/Hero";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api/axiosConfig";
 import type { PropiedadFromDB } from "../../types";
 import SearchFilter from "../SearchFilter";
 
@@ -11,7 +11,7 @@ function App() {
   const [propiedades, setPropiedades] = useState<PropiedadFromDB[]>([]);
   const heroImages = ["mardel.jpg", "depa2.jpg"];
   useEffect(() => {
-    axios
+    api
       .get("http://localhost:3000/api/propiedades")
       .then((response) => {
         setPropiedades(response.data);
@@ -22,7 +22,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    axios
+    api
       .get("http://localhost:3000/api/propiedades")
       .then((response) => {
         setPropiedades(response.data);

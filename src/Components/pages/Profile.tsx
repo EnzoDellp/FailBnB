@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PencilIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import axios from "axios";
+import api from "../../api/axiosConfig";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import Header from "../Header";
@@ -89,7 +89,7 @@ function Perfil() {
         es_anfitrion: formData.es_anfitrion,
       };
 
-      await axios.put(
+      await api.put(
         `http://localhost:3000/api/usuarios/${usuario.id}`,
         updatedUser,
       );
@@ -120,7 +120,7 @@ function Perfil() {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:3000/api/usuarios/${usuario.id}`);
+        await api.delete(`http://localhost:3000/api/usuarios/${usuario.id}`);
         toast.success("Cuenta eliminada correctamente");
         localStorage.removeItem("usuario");
         navigate("/");

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import axios from "axios";
+import api from "../../api/axiosConfig";
 import { toast } from "react-toastify";
 import Card from "../Card";
 import type { PropiedadFromDB } from "../../types/index";
@@ -32,7 +32,7 @@ function FilterResponse() {
       }
 
       try {
-        const res = await axios.get<PropiedadFromDB[]>(
+        const res = await api.get<PropiedadFromDB[]>(
           "http://localhost:3000/api/propiedades/filtrar",
           {
             params: {
@@ -41,7 +41,7 @@ function FilterResponse() {
               checkout,
               viajeros,
             },
-          }
+          },
         );
         setResultados(res.data);
       } catch (error) {

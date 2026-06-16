@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import axios from "axios";
+import api from "../../api/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import Header from "../Header";
 
@@ -20,16 +20,14 @@ function Login() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/login",
-        {
-          email: data.email,
-          pass: data.password,
-        }
-      );
+      const response = await api.post("http://localhost:3000/api/auth/login", {
+        email: data.email,
+        pass: data.password,
+      });
 
       toast.success("Inicio de sesión exitoso");
       localStorage.setItem("usuario", JSON.stringify(response.data.usuario));
+      localStorage.setItem("token", response.data.token);
       window.location.href = "/";
     } catch (error: any) {
       if (error.response?.data?.error) {
