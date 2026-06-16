@@ -1,6 +1,6 @@
 const db = require("../models/db");
 const bcrypt = require("bcrypt");
-
+const jwt = require("jsonwebtoken");
 const loginUsuario = (req, res) => {
   const { email, pass } = req.body;
 
@@ -23,9 +23,19 @@ const loginUsuario = (req, res) => {
     if (!match) {
       return res.status(401).json({ error: "Contraseña incorrecta" });
     }
+    const token = jwt.sign(
+      {
+        id: usuario.id,
+        email: usuario.email,
+        es_anfitrion: usuario.es_anfitrion,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" },
+    );
 
     res.json({
       message: "Login exitoso",
+      token,
       usuario: { id: usuario.id, nombre: usuario.nombre, email: usuario.email },
     });
   });
