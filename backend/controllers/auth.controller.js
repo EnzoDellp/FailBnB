@@ -18,18 +18,6 @@ const loginUsuario = (req, res) => {
 
     const usuario = results[0];
 
-    // Si la contraseña está en texto plano (solo para testeo temporal):
-    if (usuario.pass === pass) {
-      return res.json({
-        message: "Login exitoso",
-        usuario: {
-          id: usuario.id,
-          nombre: usuario.nombre,
-          email: usuario.email,
-        },
-      });
-    }
-
     // Comparar contraseña hasheada (usar esto con bcrypt):
     const match = await bcrypt.compare(pass, usuario.pass);
     if (!match) {
@@ -94,7 +82,7 @@ const registerUsuario = async (req, res) => {
               es_anfitrion: !!es_anfitrion,
             },
           });
-        }
+        },
       );
     });
   } catch (err) {
@@ -144,7 +132,7 @@ const actualizarUsuario = (req, res) => {
         return res.status(500).json({ error: "Error al actualizar usuario" });
 
       res.json({ message: "Usuario actualizado correctamente" });
-    }
+    },
   );
 };
 
