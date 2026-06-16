@@ -1,18 +1,17 @@
+require("dotenv").config({ path: require("path").resolve(__dirname, ".env") });
 const express = require("express");
 const cors = require("cors");
-
 const reservasRoutes = require("./routes/reservas.routes");
 const propiedadesRoutes = require("./routes/propiedades.routes");
 const authRoutes = require("./routes/auth.routes");
 const usuariosRoutes = require("./routes/usuarios.routes");
-
 const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     credentials: true,
-  })
+  }),
 );
 
 // Middleware para manejar JSON y formularios grandes (útil para imágenes)
@@ -25,6 +24,7 @@ app.use("/api/propiedades", propiedadesRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/usuarios", usuariosRoutes);
 // Levantar servidor
-app.listen(3000, () => {
-  console.log("Servidor corriendo en http://localhost:3000");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
