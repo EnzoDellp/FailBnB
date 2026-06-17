@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useState } from "react";
-import axios from "axios";
+import api from "../../api/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import imageCompression from "browser-image-compression";
 import type { NuevaPropiedadPayload } from "../../types/index";
@@ -37,7 +37,7 @@ function CrearPropiedad() {
         imagenes,
       };
 
-      await axios.post("http://localhost:3000/api/propiedades", payload);
+      await api.post("http://localhost:3000/api/propiedades", payload);
       toast.success("Propiedad creada exitosamente");
       navigate("/");
     } catch (error: any) {

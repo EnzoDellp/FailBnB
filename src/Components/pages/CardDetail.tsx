@@ -1,6 +1,6 @@
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api/axiosConfig";
 import Header from "../Header";
 import { toast } from "react-toastify";
 
@@ -27,7 +27,7 @@ function CardDetail() {
   useEffect(() => {
     if (!id) return;
 
-    axios
+    api
       .get(`http://localhost:3000/api/propiedades/${id}`)
       .then((res) => setPropiedad(res.data))
       .catch((err) => console.error("Error al obtener propiedad:", err));
@@ -116,7 +116,7 @@ function CardDetail() {
                 <p className="text-gray-500 text-sm">
                   Miembro desde{" "}
                   {new Date(
-                    propiedad.anfitrion.fecha_registro
+                    propiedad.anfitrion.fecha_registro,
                   ).toLocaleDateString("es-AR", {
                     year: "numeric",
                     month: "long",

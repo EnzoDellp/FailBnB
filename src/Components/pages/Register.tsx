@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import axios from "axios";
+import api from "../../api/axiosConfig";
 
 type FormData = {
   nombre: string;
@@ -27,7 +27,7 @@ function Register() {
     }
 
     try {
-      const response = await axios.post(
+      const response = await api.post(
         "http://localhost:3000/api/auth/register",
         {
           nombre: data.nombre,
@@ -36,7 +36,7 @@ function Register() {
           telefono: data.telefono || null,
           pass: data.password,
           es_anfitrion: !!data.es_anfitrion,
-        }
+        },
       );
 
       const usuario = response.data.usuario;
