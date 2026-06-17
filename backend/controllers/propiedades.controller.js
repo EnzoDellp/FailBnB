@@ -1,7 +1,7 @@
 const db = require("../models/db");
 const path = require("path");
 const fs = require("fs");
-
+const cloudinary = require("../config/cloudinary");
 function getFechasEntre(inicio, fin) {
   const fechas = [];
   let current = new Date(inicio);
@@ -24,22 +24,7 @@ const getAllpropiedades = (req, res) => {
   `;
 
   db.query(query, (err, results) => {
-    if (err) {
-      console.error("Error al obtener propiedades:", err);
-      return res
-        .status(500)
-        .json({ error: "Error al obtener las propiedades" });
-    }
-
-    // Agregamos la URL completa
-    const propiedadesConUrl = results.map((prop) => ({
-      ...prop,
-      portada: prop.portada?.startsWith("data:image")
-        ? prop.portada
-        : `data:image/jpeg;base64,${prop.portada}` || "",
-    }));
-
-    res.json(propiedadesConUrl);
+    res.json(results);
   });
 };
 
@@ -74,12 +59,7 @@ const getPropiedadById = (req, res) => {
 
       const propiedad = propResult[0];
 
-      propiedad.imagenes = imgResults.map((img) => {
-        const raw = img.url_imagen || "";
-        return raw.startsWith("data:image/")
-          ? raw
-          : `data:image/jpeg;base64,${raw}`;
-      });
+      propiedad.imagenes = imgResults.map((img) => img.url_imagen);
 
       propiedad.anfitrion = {
         nombre: propiedad.nombre_anfitrion,
@@ -98,7 +78,7 @@ const getPropiedadById = (req, res) => {
 };
 
 // Crear nueva propiedad con imágenes
-const createPropiedad = (req, res) => {
+const createPropiedad = async (req, res) => {
   const {
     id_usuario,
     titulo,
@@ -113,81 +93,84 @@ const createPropiedad = (req, res) => {
     fecha_inicio_disponibilidad,
     fecha_fin_disponibilidad,
   } = req.body;
-
   if (!id_usuario || !titulo || !capacidad_max || !precio_noche) {
-    return res.status(400).json({ error: "Faltan campos requeridos" });
+    return res.status(400).json({ error: "Faltan campos Requeridos " });
   }
-
-  const insertPropQuery = `
-    INSERT INTO propiedades (id_usuario, titulo, descripcion, direccion, cant_habitaciones, cant_baños, capacidad_max, precio_noche, ubicacion)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
-
-  db.query(
-    insertPropQuery,
-    [
-      id_usuario,
-      titulo,
-      descripcion,
-      direccion,
-      cant_habitaciones,
-      cant_baños,
-      capacidad_max,
-      precio_noche,
-      ubicacion,
-    ],
-    (err, result) => {
-      if (err) {
-        console.error("Error al insertar propiedad:", err);
-        return res.status(500).json({ error: "Error al crear propiedad" });
-      }
-
-      const propiedadId = result.insertId;
-      //insertar fechas
-      if (fecha_inicio_disponibilidad && fecha_fin_disponibilidad) {
-        const fechas = getFechasEntre(
-          fecha_inicio_disponibilidad,
-          fecha_fin_disponibilidad
-        );
-
-        const disponibilidadValues = fechas.map((f) => [propiedadId, f]);
-        const insertDisponQuery = `INSERT INTO disponibilidad (id_propiedad, fecha) VALUES ?`;
-
-        db.query(insertDisponQuery, [disponibilidadValues], (errDisp) => {
-          if (errDisp) {
-            console.error("Error al insertar disponibilidad:", errDisp);
-            // No cortar, seguir igual
-          } else {
-            console.log("Fechas de disponibilidad insertadas");
-          }
-        });
-      }
-      if (!Array.isArray(imagenes) || imagenes.length === 0) {
-        return res.status(201).json({
-          message: "Propiedad creada sin imágenes",
-          id: propiedadId,
-        });
-      }
-
-      const insertImgQuery = `INSERT INTO imagenes_propiedad (id_propiedad, url_imagen) VALUES ?`;
-      const values = imagenes.map((img) => [propiedadId, img]);
-
-      db.query(insertImgQuery, [values], (errImg) => {
-        if (errImg) {
-          console.error("Error al insertar imágenes:", errImg);
-          return res.status(500).json({
-            error: "Propiedad creada, pero error al guardar imágenes",
+  try {
+    //subir img a Cloudinary y obtener URLS
+    const imageUrls = await Promise.all(
+      imagenes.map((img) =>
+        cloudinary.uploader.upload(img, { folder: "failbnb" }),
+      ),
+    );
+    const urls = imageUrls.map((result) => result.secure_url);
+    const inserPropQuery = `
+      INSERT INTO propiedades (id_usuario, titulo, descripcion, direccion, cant_habitaciones, cant_baños, capacidad_max, precio_noche, ubicacion)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    db.query(
+      inserPropQuery,
+      [
+        id_usuario,
+        titulo,
+        descripcion,
+        direccion,
+        cant_habitaciones,
+        cant_baños,
+        capacidad_max,
+        precio_noche,
+        ubicacion,
+      ],
+      (err, result) => {
+        if (err) {
+          console.error("Error al insertar propiedad:", err);
+          return res.status(500).json({ error: "Erorr al crear propiedad" });
+        }
+        const propiedadId = result.insertId;
+        if (fecha_inicio_disponibilidad && fecha_fin_disponibilidad) {
+          const fechas = getFechasEntre(
+            fecha_inicio_disponibilidad,
+            fecha_fin_disponibilidad,
+          );
+          const disponibilidadValues = fechas.map((f) => [propiedadId, f]);
+          db.query(
+            `INSERT INTO disponibilidad (id_propiedad, fecha) VALUES ?`,
+            [disponibilidadValues],
+            (errDisp) => {
+              if (errDisp)
+                console.error("Error al insertar disponiblidad:", errDisp);
+            },
+          );
+        }
+        if (urls.length === 0) {
+          return res.status(201).json({
+            message: "Propiedad creada sin imagenes",
             id: propiedadId,
           });
         }
-
-        res.status(201).json({
-          message: "Propiedad e imágenes guardadas con éxito",
-          id: propiedadId,
-        });
-      });
-    }
-  );
+        const values = urls.map((url) => [propiedadId, url]);
+        db.query(
+          `INSERT INTO imagenes_propiedad (id_propiedad, url_imagen) VALUES ?`,
+          [values],
+          (errImg) => {
+            if (errImg) {
+              return res.status(500).json({
+                error: "propiedad creado, pero error al guardar imagnes",
+                id: propiedadId,
+              });
+            }
+            res.status(201).json({
+              message: "Propiedad e Imagenes guardadas con exito",
+              id: propiedadId,
+            });
+          },
+        );
+      },
+    );
+  } catch (err) {
+    console.error("Error al subir imagenes a cloudinary:", err);
+    res.status(500).json({ eror: "Erro al procesar las imagenes" });
+  }
 };
 
 // Actualizar propiedad
@@ -226,7 +209,7 @@ const updatePropiedad = (req, res) => {
     (err, result) => {
       if (err) return res.status(500).json({ error: err.message });
       res.json({ message: "Propiedad actualizada" });
-    }
+    },
   );
 };
 
@@ -253,7 +236,7 @@ const getImagenesByPropiedad = (req, res) => {
       }
 
       res.json(results);
-    }
+    },
   );
 };
 //Filtro
@@ -288,15 +271,8 @@ const buscarPropiedadesDisponibles = (req, res) => {
         return res.status(500).json({ error: "Error al buscar propiedades" });
       }
 
-      const propiedades = results.map((prop) => ({
-        ...prop,
-        portada: prop.portada?.startsWith("data:image")
-          ? prop.portada
-          : `data:image/jpeg;base64,${prop.portada}` || "",
-      }));
-
-      res.json(propiedades);
-    }
+      res.json(results);
+    },
   );
 };
 // Filtrar
@@ -346,14 +322,7 @@ const filtrarPropiedades = (req, res) => {
       return res.status(500).json({ error: "Error interno del servidor" });
     }
 
-    const propiedadesConUrl = results.map((prop) => ({
-      ...prop,
-      portada: prop.portada?.startsWith("data:image")
-        ? prop.portada
-        : `data:image/jpeg;base64,${prop.portada}` || "",
-    }));
-
-    res.json(propiedadesConUrl);
+    res.json(results);
   });
 };
 
