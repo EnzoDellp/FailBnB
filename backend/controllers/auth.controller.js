@@ -1,7 +1,7 @@
 const db = require("../models/db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const loginUsuario = (req, res) => {
+const loginUsuario = (req, res, next) => {
   const { email, pass } = req.body;
 
   if (!email || !pass) {
@@ -10,7 +10,7 @@ const loginUsuario = (req, res) => {
 
   const query = "SELECT * FROM usuarios WHERE email = ?";
   db.query(query, [email], async (err, results) => {
-    if (err) return res.status(500).json({ error: "Error en el servidor" });
+    if (err) return next(err);
 
     if (results.length === 0) {
       return res.status(401).json({ error: "Usuario no encontrado" });
@@ -41,7 +41,7 @@ const loginUsuario = (req, res) => {
   });
 };
 
-const registerUsuario = async (req, res) => {
+const registerUsuario = async (req, res, next) => {
   const { nombre, apellido, email, pass, telefono, es_anfitrion } = req.body;
 
   if (!nombre || !apellido || !email || !pass) {
@@ -51,7 +51,7 @@ const registerUsuario = async (req, res) => {
   try {
     const queryCheck = "SELECT * FROM usuarios WHERE email = ?";
     db.query(queryCheck, [email], async (err, results) => {
-      if (err) return res.status(500).json({ error: "Error en el servidor" });
+      if (err) return next(err);
       if (results.length > 0) {
         return res.status(409).json({ error: "El usuario ya existe" });
       }
@@ -73,13 +73,7 @@ const registerUsuario = async (req, res) => {
           es_anfitrion ? 1 : 0,
         ],
         (err, result) => {
-          if (err) {
-            console.error("Error al insertar usuario:");
-            console.error(err);
-            return res
-              .status(500)
-              .json({ error: "Error al registrar usuario" });
-          }
+          if (err) return next(err);
 
           res.status(201).json({
             message: "Usuario registrado con éxito",
@@ -96,11 +90,11 @@ const registerUsuario = async (req, res) => {
       );
     });
   } catch (err) {
-    res.status(500).json({ error: "Error en el servidor" });
+    next(err);
   }
 };
 
-const eliminarUsuario = (req, res) => {
+const eliminarUsuario = (req, res, next) => {
   const { id } = req.params;
 
   if (!id || isNaN(Number(id))) {
@@ -110,7 +104,7 @@ const eliminarUsuario = (req, res) => {
   const deleteQuery = "DELETE FROM usuarios WHERE id = ?";
 
   db.query(deleteQuery, [id], (err, result) => {
-    if (err) return res.status(500).json({ error: "Error en el servidor" });
+    if (err) return next(err);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: "Usuario no encontrado" });
@@ -120,7 +114,7 @@ const eliminarUsuario = (req, res) => {
   });
 };
 
-const actualizarUsuario = (req, res) => {
+const actualizarUsuario = (req, res, next) => {
   const { id } = req.params;
   const { nombre, apellido, email, telefono, es_anfitrion } = req.body;
 
@@ -138,8 +132,7 @@ const actualizarUsuario = (req, res) => {
     updateQuery,
     [nombre, apellido, email, telefono || null, es_anfitrion ? 1 : 0, id],
     (err, result) => {
-      if (err)
-        return res.status(500).json({ error: "Error al actualizar usuario" });
+      if (err) return next(err);
 
       res.json({ message: "Usuario actualizado correctamente" });
     },
