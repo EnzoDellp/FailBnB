@@ -12,7 +12,11 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 pool.getConnection((err) => {
-  if (err) throw err;
+  if (err) {
+    console.error("Error al conectar a la BDD:", err.message);
+    return;
+  }
   console.log("Conectado a la BDD");
 });
+
 module.exports = pool;
