@@ -74,9 +74,14 @@ const registerUsuario = async (req, res, next) => {
         ],
         (err, result) => {
           if (err) return next(err);
-
+          const token = jwt.sign(
+            { id: result.insertId, email, es_anfitrion: !!es_anfitrion },
+            process.env.JWT_SECRET,
+            { expiresIn: "24h" },
+          );
           res.status(201).json({
             message: "Usuario registrado con éxito",
+            token,
             usuario: {
               id: result.insertId,
               nombre,

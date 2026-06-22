@@ -41,7 +41,7 @@ function Register() {
 
       const usuario = response.data.usuario;
       toast.success("Cuenta creada exitosamente");
-
+      localStorage.setItem("token", response.data.token);
       localStorage.setItem("usuario", JSON.stringify(usuario));
 
       // Redirige al home con breve pausa
