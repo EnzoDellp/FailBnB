@@ -1,4 +1,5 @@
 require("dotenv").config({ path: require("path").resolve(__dirname, ".env") });
+const errorHandler = require("./middlewares/error.middleware");
 const express = require("express");
 const cors = require("cors");
 const reservasRoutes = require("./routes/reservas.routes");
@@ -23,6 +24,8 @@ app.use("/api/reservas", reservasRoutes);
 app.use("/api/propiedades", propiedadesRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/usuarios", usuariosRoutes);
+//Middleware de Errores
+app.use(errorHandler);
 // Levantar servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
