@@ -48,10 +48,8 @@ router.get("/disponibles", propiedadesController.buscarPropiedadesDisponibles);
 router.get("/filtrar", propiedadesController.filtrarPropiedades);
 // Obtener una Propiedad por ID
 router.get("/:id", propiedadesController.getPropiedadById);
-
 // Actualizar una Propiedad por ID
 router.put("/:id", verificarToken, propiedadesController.updatePropiedad);
-
 // Eliminar una Propiedad por ID
 router.delete("/:id", verificarToken, propiedadesController.deletePropiedad);
 
