@@ -36,16 +36,6 @@ function CardDetail() {
       .catch((err) => console.error("Error al obtener propiedad:", err));
   }, [id]);
 
-  const formatDate = (dateStr: string | null) => {
-    if (!dateStr) return "--/--/----";
-    const date = new Date(dateStr);
-    return date.toLocaleDateString("es-AR", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    });
-  };
-
   if (!propiedad) {
     return <div className="text-center mt-10 text-gray-500">Cargando...</div>;
   }
