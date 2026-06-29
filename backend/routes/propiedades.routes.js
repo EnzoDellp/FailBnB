@@ -8,6 +8,11 @@ const verificarToken = require("../middlewares/auth.middleware");
 // Listar Propiedades
 router.get("/", propiedadesController.getAllpropiedades);
 
+router.get(
+  "/mis-anuncios",
+  verificarToken,
+  propiedadesController.getMisAnuncios,
+);
 // Crear nueva Propiedad
 router.post(
   "/",
