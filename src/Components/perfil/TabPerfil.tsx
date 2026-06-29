@@ -79,10 +79,7 @@ function TabPerfil() {
         telefono: formData.telefono || null,
         es_anfitrion: formData.es_anfitrion,
       };
-      await api.put(
-        `http://localhost:3000/api/usuarios/${usuario.id}`,
-        updatedUser,
-      );
+      await api.put(`/usuarios/${usuario.id}`, updatedUser);
       const newUser = { ...usuario, ...updatedUser };
       setUsuario(newUser);
       localStorage.setItem("usuario", JSON.stringify(newUser));
@@ -106,7 +103,7 @@ function TabPerfil() {
     });
     if (result.isConfirmed) {
       try {
-        await api.delete(`http://localhost:3000/api/usuarios/${usuario.id}`);
+        await api.delete(`/usuarios/${usuario.id}`);
         toast.success("Cuenta eliminada correctamente");
         localStorage.removeItem("usuario");
         navigate("/");
