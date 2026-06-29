@@ -152,6 +152,7 @@ function CardDetail() {
                   <p className="text-sm font-medium">
                     <input
                       type="date"
+                      lang="es"
                       value={fecha_ingreso}
                       onChange={(e) => setIngreso(e.target.value)}
                     />
@@ -162,6 +163,7 @@ function CardDetail() {
                   <p className="text-sm font-medium">
                     <input
                       type="date"
+                      lang="es"
                       value={fecha_egreso}
                       onChange={(e) => setegreso(e.target.value)}
                     />

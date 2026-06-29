@@ -65,7 +65,7 @@ const crearReservas = async (req, res, next) => {
 const getMisReservas = async (req, res, next) => {
   const id_usuario = req.usuario.id;
   db.query(
-    "SELECT reservas.id,reservas.id_usuario,propiedades.titulo,propiedades.ubicacion, reservas.id_propiedad, reservas.fecha_ingreso, reservas.fecha_egreso, reservas.cantidad_viajeros FROM reservas JOIN propiedades ON reservas.id_propiedad=propiedades.id WHERE reservas.id_usuario=?",
+    "SELECT reservas.id,reservas.id_usuario,propiedades.titulo,propiedades.ubicacion,  reservas.id_propiedad, reservas.fecha_ingreso, reservas.fecha_egreso, reservas.cantidad_viajeros FROM reservas JOIN propiedades ON reservas.id_propiedad=propiedades.id WHERE reservas.id_usuario=?",
     [id_usuario],
     (err, results) => {
       if (err) return next(err);
@@ -76,7 +76,7 @@ const getMisReservas = async (req, res, next) => {
 const getMisPropiedades = async (req, res, next) => {
   const id_usuario = req.usuario.id;
   db.query(
-    "SELECT reservas.id,reservas.fecha_ingreso, reservas.fecha_egreso, reservas.cantidad_viajeros,propiedades.titulo,propiedades.ubicacion,usuarios.nombre,usuarios.apellido FROM reservas JOIN propiedades ON reservas.id_propiedad=propiedades.id JOIN usuarios ON reservas.id_usuario=usuarios.id WHERE propiedades.id_usuario=?",
+    "SELECT reservas.id,reservas.fecha_ingreso, reservas.fecha_egreso, reservas.cantidad_viajeros,propiedades.titulo,propiedades.ubicacion,propiedades.precio_noche,usuarios.nombre,usuarios.apellido FROM reservas JOIN propiedades ON reservas.id_propiedad=propiedades.id JOIN usuarios ON reservas.id_usuario=usuarios.id WHERE propiedades.id_usuario=?",
     [id_usuario],
     (err, results) => {
       if (err) return next(err);

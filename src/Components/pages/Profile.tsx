@@ -2,7 +2,7 @@ import { useState } from "react";
 import Header from "../Header";
 import TabReservas from "../perfil/TabReservas";
 import TabPropiedades from "../perfil/TabPropiedades";
-import TabPerfil from "../perfil/tabPerfil";
+import TabPerfil from "../perfil/TabPerfil";
 
 function Perfil() {
   const [tab, setTab] = useState("perfil");
