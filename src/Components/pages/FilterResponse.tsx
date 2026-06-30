@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import api from "../../api/axiosConfig";
 import { toast } from "react-toastify";
@@ -20,7 +20,7 @@ function FilterResponse() {
   useEffect(() => {
     const fetchResultados = async () => {
       if (!ubicacion || !checkin || !checkout || !viajeros) {
-        toast.error("Faltan campos para realizar la búsqueda.");
+        toast.error("Faltan campos para realizar la bÃºsqueda.");
         setLoading(false);
         return;
       }
@@ -83,7 +83,7 @@ function FilterResponse() {
                 imagen={prop.portada}
                 precio={prop.precio_noche}
                 camas={prop.cant_habitaciones}
-                banios={prop.cant_banios || prop.cant_banios}
+                banios={prop.cant_baños}
                 calificacion={5}
                 popular={false}
               />
@@ -96,3 +96,4 @@ function FilterResponse() {
 }
 
 export default FilterResponse;
+

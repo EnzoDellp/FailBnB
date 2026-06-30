@@ -16,7 +16,7 @@ export type PropiedadFromDB = {
   descripcion?: string;
   precio_noche: number;
   cant_habitaciones: number;
-  cant_banios: number;
+  cant_baños: number;
   ubicacion: string;
   portada: string;
 };
@@ -61,5 +61,4 @@ export type AnunciosProps = PropiedadFromDB & {
   direccion: string;
   capacidad_max: number;
   fecha_publicacion: string;
-  cant_baños: number;
 };

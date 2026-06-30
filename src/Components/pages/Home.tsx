@@ -1,4 +1,4 @@
-import Card from "../../Components/Card";
+﻿import Card from "../../Components/Card";
 // import Carruse from "./Components/Carruse";
 import Header from "../../Components/Header";
 import Hero from "../../Components/Hero";
@@ -60,7 +60,7 @@ function App() {
                 titulo={propiedad.titulo}
                 precio={propiedad.precio_noche}
                 camas={propiedad.cant_habitaciones}
-                banios={propiedad.cant_banios}
+                banios={propiedad.cant_baños}
                 ubicacion={propiedad.ubicacion}
                 calificacion={4.5}
                 imagen={propiedad.portada}
@@ -83,3 +83,4 @@ function App() {
 }
 
 export default App;
+
