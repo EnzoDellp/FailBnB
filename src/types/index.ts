@@ -62,3 +62,17 @@ export type AnunciosProps = PropiedadFromDB & {
   capacidad_max: number;
   fecha_publicacion: string;
 };
+export type CardDetailProps = {
+  titulo: string;
+  descripcion: string;
+  cant_habitaciones: number;
+  cant_baños: number;
+  capacidad_max: number;
+  precio_noche: number;
+  imagenes: string[];
+  anfitrion: {
+    nombre: string;
+    apellido: string;
+    fecha_registro: string;
+  };
+};
