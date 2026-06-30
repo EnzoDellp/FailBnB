@@ -41,7 +41,8 @@ function CrearPropiedad() {
       toast.success("Propiedad creada exitosamente");
       navigate("/");
     } catch (error: any) {
-      toast.error("Error al crear propiedad");
+      const mensaje = error.response?.data?.error;
+      toast.error(mensaje || "Error al crear propiedad");
       console.error(error);
     }
   };
