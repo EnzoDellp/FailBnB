@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
 import { toast } from "react-toastify";
-
+import type { ReservaProps } from "../../types";
 function TabReservas() {
-  const [reservas, setReservas] = useState([]);
+  const [reservas, setReservas] = useState<ReservaProps[]>([]);
 
   useEffect(() => {
     api.get("/reservas/mis-reservas").then((res) => setReservas(res.data));
@@ -13,7 +13,9 @@ function TabReservas() {
       await api.delete(`/reservas/${id}`);
       toast.success("Reserva cancelada");
       // actualizar la lista sin hacer otra petición al backend:
-      setReservas((prev: any) => prev.filter((r: any) => r.id !== id));
+      setReservas((prev: ReservaProps[]) =>
+        prev.filter((r: ReservaProps) => r.id !== id),
+      );
     } catch (error: any) {
       toast.error(error.response?.data?.error || "Error al cancelar");
     }
@@ -26,7 +28,7 @@ function TabReservas() {
       {reservas.length === 0 ? (
         <p className="text-gray-500">No tenés reservas aún.</p>
       ) : (
-        reservas.map((r: any) => (
+        reservas.map((r: ReservaProps) => (
           <div key={r.id_propiedad + r.fecha_ingreso}>
             <div className="bg-white rounded-xl shadow p-4 mb-3 flex-1  items-center">
               <p className="font-semibold">{r.titulo}</p>

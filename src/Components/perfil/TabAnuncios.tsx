@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
 import { toast } from "react-toastify";
 import swal from "sweetalert2";
+import type { AnunciosProps } from "../../types";
 
 export default function TabAnuncios() {
-  const [anuncios, setAnuncios] = useState([]);
+  const [anuncios, setAnuncios] = useState<AnunciosProps[]>([]);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [anuncioSelecionado, setAnuncioSelecionado] = useState<any>(null);
+  const [anuncioSelecionado, setAnuncioSelecionado] =
+    useState<AnunciosProps | null>(null);
   useEffect(() => {
     api.get("/propiedades/mis-anuncios").then((res) => setAnuncios(res.data));
   }, []);
@@ -25,22 +27,24 @@ export default function TabAnuncios() {
       try {
         await api.delete(`/propiedades/${id}`);
         toast.success("Propiedad eliminada");
-        setAnuncios((prev: any) => prev.filter((a: any) => a.id !== id));
+        setAnuncios((prev: AnunciosProps[]) =>
+          prev.filter((a: AnunciosProps) => a.id !== id),
+        );
       } catch (error: any) {
         toast.error(error.response?.data?.error || "Error al eliminar");
       }
     }
   };
   const handleGuardar = async () => {
+    if (!anuncioSelecionado) return;
+    const datosActualizados = anuncioSelecionado;
+
     try {
-      await api.put(
-        `/propiedades/${anuncioSelecionado.id}`,
-        anuncioSelecionado,
-      );
+      await api.put(`/propiedades/${datosActualizados.id}`, datosActualizados);
       toast.success("Anuncio Actualizado");
-      setAnuncios((prev: any) =>
-        prev.map((a: any) =>
-          a.id === anuncioSelecionado.id ? anuncioSelecionado : a,
+      setAnuncios((prev: AnunciosProps[]) =>
+        prev.map((a: AnunciosProps) =>
+          a.id === datosActualizados.id ? datosActualizados : a,
         ),
       );
       setModalOpen(false);
@@ -48,13 +52,14 @@ export default function TabAnuncios() {
       toast.error(error.response?.data?.error || "Error al actualizar");
     }
   };
+
   return (
     <div className="w-full max-w-2xl">
       <h3 className="text-xl font-semibold mb-4 ">Mis Anuncios</h3>
       {anuncios.length === 0 ? (
         <p className="text-gray-500">No tienes propiedaes Publicadas</p>
       ) : (
-        anuncios.map((a: any) => (
+        anuncios.map((a: AnunciosProps) => (
           <div
             key={a.id}
             className="bg-white rounded-xl shadow p-4 mb-3 flex justify-between items-center"
@@ -129,7 +134,7 @@ export default function TabAnuncios() {
                 onChange={(e) =>
                   setAnuncioSelecionado({
                     ...anuncioSelecionado,
-                    precio_noche: e.target.value,
+                    precio_noche: Number(e.target.value),
                   })
                 }
                 placeholder="Precio por Noche"
@@ -144,7 +149,7 @@ export default function TabAnuncios() {
                 onChange={(e) =>
                   setAnuncioSelecionado({
                     ...anuncioSelecionado,
-                    capacidad_max: e.target.value,
+                    capacidad_max: Number(e.target.value),
                   })
                 }
                 placeholder="Capacidad Máxima"
@@ -174,7 +179,7 @@ export default function TabAnuncios() {
                 onChange={(e) =>
                   setAnuncioSelecionado({
                     ...anuncioSelecionado,
-                    cant_habitaciones: e.target.value,
+                    cant_habitaciones: Number(e.target.value),
                   })
                 }
                 placeholder="Cantidad Habitaciones"
@@ -189,7 +194,7 @@ export default function TabAnuncios() {
                 onChange={(e) =>
                   setAnuncioSelecionado({
                     ...anuncioSelecionado,
-                    cant_baños: e.target.value,
+                    cant_baños: Number(e.target.value),
                   })
                 }
                 placeholder="Cantidad de Baños"

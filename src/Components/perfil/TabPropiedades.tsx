@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
-
+import type { PropiedadesProps } from "../../types";
 function TabPropiedades() {
-  const [misPropiedades, SetMisPropiedades] = useState([]);
+  const [misPropiedades, SetMisPropiedades] = useState<PropiedadesProps[]>([]);
   useEffect(() => {
     api
       .get("/reservas/mis-propiedades")
@@ -18,7 +18,7 @@ function TabPropiedades() {
       {misPropiedades.length == 0 ? (
         <p className="text-gray-500">No Tenes Propiedades Aún.</p>
       ) : (
-        misPropiedades.map((r: any) => {
+        misPropiedades.map((r: PropiedadesProps) => {
           const dias = Math.round(
             (new Date(r.fecha_egreso).getTime() -
               new Date(r.fecha_ingreso).getTime()) /

@@ -35,3 +35,31 @@ export type NuevaPropiedadPayload = Omit<PropiedadFromDB, "id"> & {
 export type HeroProps = {
   imgSrc?: string;
 };
+export type ReservaProps = {
+  id: number;
+  id_usuario: number;
+  titulo: string;
+  ubicacion: string;
+  id_propiedad: number;
+  fecha_ingreso: string;
+  fecha_egreso: string;
+  cantidad_viajeros: number;
+};
+export type PropiedadesProps = {
+  id: number;
+  fecha_ingreso: string;
+  fecha_egreso: string;
+  titulo: string;
+  ubicacion: string;
+  precio_noche: number;
+  nombre: string;
+  apellido: string;
+  cantidad_viajeros: number;
+};
+export type AnunciosProps = PropiedadFromDB & {
+  id_usuario: number;
+  direccion: string;
+  capacidad_max: number;
+  fecha_publicacion: string;
+  cant_baños: number;
+};

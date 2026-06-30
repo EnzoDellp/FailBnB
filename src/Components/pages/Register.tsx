@@ -17,7 +17,6 @@ function Register() {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
