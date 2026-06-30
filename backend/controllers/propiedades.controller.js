@@ -41,7 +41,8 @@ const getPropiedadById = (req, res, next) => {
 
   db.query(propQuery, [id], (err, propResult) => {
     if (err) return next(err);
-    if (propResult.length === 0) return res.status(404).json({ error: "No encontrada" });
+    if (propResult.length === 0)
+      return res.status(404).json({ error: "No encontrada" });
 
     db.query(imgQuery, [id], (err2, imgResults) => {
       if (err2) return next(err2);
@@ -63,8 +64,8 @@ const getPropiedadById = (req, res, next) => {
 };
 
 const createPropiedad = async (req, res, next) => {
+  const id_usuario = req.usuario.id;
   const {
-    id_usuario,
     titulo,
     descripcion,
     direccion,
@@ -84,7 +85,9 @@ const createPropiedad = async (req, res, next) => {
 
   try {
     const imageUrls = await Promise.all(
-      imagenes.map((img) => cloudinary.uploader.upload(img, { folder: "failbnb" }))
+      imagenes.map((img) =>
+        cloudinary.uploader.upload(img, { folder: "failbnb" }),
+      ),
     );
     const urls = imageUrls.map((result) => result.secure_url);
 
@@ -95,30 +98,58 @@ const createPropiedad = async (req, res, next) => {
 
     db.query(
       insertPropQuery,
-      [id_usuario, titulo, descripcion, direccion, cant_habitaciones, cant_baños, capacidad_max, precio_noche, ubicacion],
+      [
+        id_usuario,
+        titulo,
+        descripcion,
+        direccion,
+        cant_habitaciones,
+        cant_baños,
+        capacidad_max,
+        precio_noche,
+        ubicacion,
+      ],
       (err, result) => {
         if (err) return next(err);
 
         const propiedadId = result.insertId;
 
         if (fecha_inicio_disponibilidad && fecha_fin_disponibilidad) {
-          const fechas = getFechasEntre(fecha_inicio_disponibilidad, fecha_fin_disponibilidad);
+          const fechas = getFechasEntre(
+            fecha_inicio_disponibilidad,
+            fecha_fin_disponibilidad,
+          );
           const disponibilidadValues = fechas.map((f) => [propiedadId, f]);
-          db.query(`INSERT INTO disponibilidad (id_propiedad, fecha) VALUES ?`, [disponibilidadValues], (errDisp) => {
-            if (errDisp) console.error("Error al insertar disponibilidad:", errDisp);
-          });
+          db.query(
+            `INSERT INTO disponibilidad (id_propiedad, fecha) VALUES ?`,
+            [disponibilidadValues],
+            (errDisp) => {
+              if (errDisp)
+                console.error("Error al insertar disponibilidad:", errDisp);
+            },
+          );
         }
 
         if (urls.length === 0) {
-          return res.status(201).json({ message: "Propiedad creada sin imágenes", id: propiedadId });
+          return res.status(201).json({
+            message: "Propiedad creada sin imágenes",
+            id: propiedadId,
+          });
         }
 
         const values = urls.map((url) => [propiedadId, url]);
-        db.query(`INSERT INTO imagenes_propiedad (id_propiedad, url_imagen) VALUES ?`, [values], (errImg) => {
-          if (errImg) return next(errImg);
-          res.status(201).json({ message: "Propiedad e imágenes guardadas con éxito", id: propiedadId });
-        });
-      }
+        db.query(
+          `INSERT INTO imagenes_propiedad (id_propiedad, url_imagen) VALUES ?`,
+          [values],
+          (errImg) => {
+            if (errImg) return next(errImg);
+            res.status(201).json({
+              message: "Propiedad e imágenes guardadas con éxito",
+              id: propiedadId,
+            });
+          },
+        );
+      },
     );
   } catch (err) {
     next(err);
@@ -127,35 +158,76 @@ const createPropiedad = async (req, res, next) => {
 
 const updatePropiedad = (req, res, next) => {
   const id = req.params.id;
-  const { titulo, descripcion, direccion, cant_habitaciones, cant_baños, capacidad_max, precio_noche, ubicacion } = req.body;
+  const id_usuario = req.usuario.id;
+  const {
+    titulo,
+    descripcion,
+    direccion,
+    cant_habitaciones,
+    cant_baños,
+    capacidad_max,
+    precio_noche,
+    ubicacion,
+  } = req.body;
 
   const query = `
     UPDATE propiedades SET
     titulo = ?, descripcion = ?, direccion = ?, cant_habitaciones = ?, cant_baños = ?, capacidad_max = ?, precio_noche = ?, ubicacion = ?
-    WHERE id = ?
+    WHERE id = ? AND id_usuario=?
   `;
 
-  db.query(query, [titulo, descripcion, direccion, cant_habitaciones, cant_baños, capacidad_max, precio_noche, ubicacion, id], (err) => {
-    if (err) return next(err);
-    res.json({ message: "Propiedad actualizada" });
-  });
+  db.query(
+    query,
+    [
+      titulo,
+      descripcion,
+      direccion,
+      cant_habitaciones,
+      cant_baños,
+      capacidad_max,
+      precio_noche,
+      ubicacion,
+      id,
+      id_usuario,
+    ],
+    (err, result) => {
+      if (err) return next(err);
+      if (result.affectedRows === 0)
+        return res
+          .status(403)
+          .json({ error: "No autorizado o propiedad no encontrada" });
+      res.json({ message: "Propiedad actualizada" });
+    },
+  );
 };
 
 const deletePropiedad = (req, res, next) => {
   const id = req.params.id;
-  db.query("DELETE FROM propiedades WHERE id = ?", [id], (err, result) => {
-    if (err) return next(err);
-    if (result.affectedRows === 0) return res.status(404).json({ error: "Propiedad no encontrada" });
-    res.json({ message: "Propiedad eliminada" });
-  });
+  const id_usuario = req.usuario.id;
+  db.query(
+    "DELETE FROM propiedades WHERE id = ? AND id_usuario=?",
+    [id, id_usuario],
+    (err, result) => {
+      if (err) return next(err);
+      if (result.affectedRows === 0)
+        return res
+          .status(403)
+          .json({ error: "No Autorizado o Propiedad no Encontrada" });
+      res.json({ message: "Propiedad eliminada" });
+    },
+  );
 };
 
 const getImagenesByPropiedad = (req, res, next) => {
   const id = req.params.id;
-  db.query("SELECT * FROM imagenes_propiedad WHERE id_propiedad = ?", [id], (err, results) => {
-    if (err) return next(err);
-    res.json(results);
-  });
+  db.query(
+    "SELECT * FROM imagenes_propiedad WHERE id_propiedad = ?",
+    [id],
+    (err, results) => {
+      if (err) return next(err);
+      res.json(results);
+    },
+  );
 };
 
 const buscarPropiedadesDisponibles = (req, res, next) => {
@@ -179,10 +251,14 @@ const buscarPropiedadesDisponibles = (req, res, next) => {
       )
   `;
 
-  db.query(query, [`%${ubicacion}%`, parseInt(viajeros), checkin, checkout], (err, results) => {
-    if (err) return next(err);
-    res.json(results);
-  });
+  db.query(
+    query,
+    [`%${ubicacion}%`, parseInt(viajeros), checkin, checkout],
+    (err, results) => {
+      if (err) return next(err);
+      res.json(results);
+    },
+  );
 };
 
 const filtrarPropiedades = (req, res, next) => {
@@ -215,14 +291,29 @@ const filtrarPropiedades = (req, res, next) => {
     HAVING COUNT(d.fecha) = ?
   `;
 
-  const values = [`%${ubicacion}%`, parseInt(viajeros), ...fechas, fechas.length];
+  const values = [
+    `%${ubicacion}%`,
+    parseInt(viajeros),
+    ...fechas,
+    fechas.length,
+  ];
 
   db.query(sql, values, (err, results) => {
     if (err) return next(err);
     res.json(results);
   });
 };
-
+const getMisAnuncios = (req, res, next) => {
+  const id_usuario = req.usuario.id;
+  db.query(
+    `SELECT p.*,(SELECT url_imagen FROM imagenes_propiedad WHERE id_propiedad= p.id ORDER BY id LIMIT 1) AS portada FROM propiedades p WHERE p.id_usuario=?`,
+    [id_usuario],
+    (err, results) => {
+      if (err) return next(err);
+      res.json(results);
+    },
+  );
+};
 module.exports = {
   getAllpropiedades,
   getPropiedadById,
@@ -232,4 +323,5 @@ module.exports = {
   getImagenesByPropiedad,
   buscarPropiedadesDisponibles,
   filtrarPropiedades,
+  getMisAnuncios,
 };

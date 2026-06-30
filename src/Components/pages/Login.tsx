@@ -30,11 +30,8 @@ function Login() {
       localStorage.setItem("token", response.data.token);
       window.location.href = "/";
     } catch (error: any) {
-      if (error.response?.data?.error) {
-        toast.error(`Error: ${error.response.data.error}`);
-      } else {
-        toast.error("Error al conectar con el servidor");
-      }
+      const mensaje = error.response?.data?.error;
+      toast.error(mensaje || "Error al Iniciar Sesion");
     }
   };
 

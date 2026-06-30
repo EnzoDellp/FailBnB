@@ -14,7 +14,10 @@ function CardDetail() {
   const checkin = searchParams.get("checkin");
   const checkout = searchParams.get("checkout");
   const viajeros = searchParams.get("viajeros");
-
+  //Campos editables
+  const [fecha_ingreso, setIngreso] = useState(checkin || "");
+  const [fecha_egreso, setegreso] = useState(checkout || "");
+  const [cantViajeros, setViajeros] = useState(viajeros || "");
   // Recuperar usuario del localStorage
   useEffect(() => {
     const user = localStorage.getItem("usuario");
@@ -33,27 +36,6 @@ function CardDetail() {
       .catch((err) => console.error("Error al obtener propiedad:", err));
   }, [id]);
 
-  const formatDate = (dateStr: string | null) => {
-    if (!dateStr) return "--/--/----";
-    const date = new Date(dateStr);
-    return date.toLocaleDateString("es-AR", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    });
-  };
-
-  // Función para manejar click en reservar
-  const handleReservar = () => {
-    if (usuario) {
-      toast.success("Reservando...");
-      // Aquí podés redirigir o mostrar modal de reserva
-    } else {
-      toast.warning("Debes iniciar sesión para reservar");
-      navigate("/Login");
-    }
-  };
-
   if (!propiedad) {
     return <div className="text-center mt-10 text-gray-500">Cargando...</div>;
   }
@@ -69,6 +51,30 @@ function CardDetail() {
   } = propiedad;
 
   const portada = imagenes[0] || "/img/default.jpg";
+  const handleReservar = async () => {
+    if (!fecha_ingreso || !fecha_egreso || !cantViajeros) {
+      toast.warning(
+        "Debes selecionar fechas y viajeros antes de realizar una reserva",
+      );
+      return;
+    }
+    try {
+      if (usuario) {
+        await api.post("/reservas", {
+          id_propiedad: id,
+          fecha_ingreso: fecha_ingreso,
+          fecha_egreso: fecha_egreso,
+          cantidad_viajeros: cantViajeros,
+        });
+        toast.success("¡Reserva Creada!");
+      } else {
+        toast.warning("Debes iniciar sesión para reservar");
+        navigate("/Login");
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || "Error al reservar");
+    }
+  };
 
   return (
     <>
@@ -99,7 +105,9 @@ function CardDetail() {
             {capacidad_max} huéspedes &bull; {cant_habitaciones} habitaciones
             &bull; {cant_baños} baños
           </p>
-          <p className="text-gray-700 leading-relaxed">{descripcion}</p>
+          <p className="text-gray-700 leading-relaxed break-words">
+            {descripcion}
+          </p>
         </div>
 
         {/* Sección anfitrión + reserva */}
@@ -135,19 +143,43 @@ function CardDetail() {
               </span>
             </p>
             <div className="border rounded-lg overflow-hidden mb-4">
-              <div className="grid grid-cols-2 divide-x">
-                <div className="p-2">
+              <p className="text-xs text-gray-700 m-3">
+                Editá las fechas y viajeros antes de reservar
+              </p>
+              <div className="grid grid-cols-2">
+                <div className="p-3">
                   <p className="text-xs text-gray-500">Check-In</p>
-                  <p className="text-sm font-medium">{formatDate(checkin)}</p>
+                  <p className="text-sm font-medium">
+                    <input
+                      type="date"
+                      lang="es"
+                      value={fecha_ingreso}
+                      onChange={(e) => setIngreso(e.target.value)}
+                    />
+                  </p>
                 </div>
-                <div className="p-2">
+                <div className="p-3">
                   <p className="text-xs text-gray-500">Check-Out</p>
-                  <p className="text-sm font-medium">{formatDate(checkout)}</p>
+                  <p className="text-sm font-medium">
+                    <input
+                      type="date"
+                      lang="es"
+                      value={fecha_egreso}
+                      onChange={(e) => setegreso(e.target.value)}
+                    />
+                  </p>
                 </div>
               </div>
               <div className="border-t p-2">
                 <p className="text-xs text-gray-500">Viajeros</p>
-                <p className="text-sm font-medium">{viajeros || "--"}</p>
+                <p className="text-sm font-medium">
+                  <input
+                    placeholder="Ej:2"
+                    type="number"
+                    value={cantViajeros}
+                    onChange={(e) => setViajeros(e.target.value)}
+                  />
+                </p>
               </div>
             </div>
 

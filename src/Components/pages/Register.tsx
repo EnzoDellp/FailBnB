@@ -17,7 +17,6 @@ function Register() {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
@@ -49,11 +48,8 @@ function Register() {
         window.location.href = "/";
       }, 1500);
     } catch (error: any) {
-      if (error.response?.data?.error) {
-        toast.error(`Error: ${error.response.data.error}`);
-      } else {
-        toast.error("Error al conectar con el servidor");
-      }
+      const mensaje = error.response?.data?.error;
+      toast.error(mensaje || "Error al Crear la Cuenta");
     }
   };
 
