@@ -185,7 +185,7 @@ export default function TabAnuncios() {
                 placeholder="Cantidad Habitaciones"
               />
               <label className="text-sm font-medium text-gray-700 ">
-                Capacidad de Baños
+                Cantidad de Baños
               </label>
               <input
                 type="number"
