@@ -20,7 +20,7 @@ function Login() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const response = await api.post("http://localhost:3000/api/auth/login", {
+      const response = await api.post("/auth/login", {
         email: data.email,
         pass: data.password,
       });

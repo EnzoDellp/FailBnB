@@ -31,7 +31,7 @@ function CardDetail() {
     if (!id) return;
 
     api
-      .get(`http://localhost:3000/api/propiedades/${id}`)
+      .get(`/propiedades/${id}`)
       .then((res) => setPropiedad(res.data))
       .catch((err) => console.error("Error al obtener propiedad:", err));
   }, [id]);

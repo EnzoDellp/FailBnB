@@ -12,7 +12,7 @@ function App() {
   const heroImages = ["mardel.jpg", "depa2.jpg"];
   useEffect(() => {
     api
-      .get("http://localhost:3000/api/propiedades")
+      .get("/propiedades")
       .then((response) => {
         setPropiedades(response.data);
       })
@@ -23,7 +23,7 @@ function App() {
 
   useEffect(() => {
     api
-      .get("http://localhost:3000/api/propiedades")
+      .get("/propiedades")
       .then((response) => {
         setPropiedades(response.data);
       })
@@ -83,4 +83,3 @@ function App() {
 }
 
 export default App;
-

@@ -32,17 +32,14 @@ function FilterResponse() {
       }
 
       try {
-        const res = await api.get<PropiedadFromDB[]>(
-          "http://localhost:3000/api/propiedades/filtrar",
-          {
-            params: {
-              ubicacion,
-              checkin,
-              checkout,
-              viajeros,
-            },
+        const res = await api.get<PropiedadFromDB[]>("/propiedades/filtrar", {
+          params: {
+            ubicacion,
+            checkin,
+            checkout,
+            viajeros,
           },
-        );
+        });
         setResultados(res.data);
       } catch (error) {
         toast.error("Error al obtener propiedades filtradas");
@@ -96,4 +93,3 @@ function FilterResponse() {
 }
 
 export default FilterResponse;
-
