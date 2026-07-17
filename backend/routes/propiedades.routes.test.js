@@ -17,5 +17,5 @@ describe("Validate JWT", () => {
     expect(res.status).toBe(403);
   });
   const db = require("../models/db");
-  afeterAll(() => db.end());
+  afterAll(() => db.end());
 });
