@@ -26,17 +26,14 @@ function Register() {
     }
 
     try {
-      const response = await api.post(
-        "http://localhost:3000/api/auth/register",
-        {
-          nombre: data.nombre,
-          apellido: data.apellido,
-          email: data.email,
-          telefono: data.telefono || null,
-          pass: data.password,
-          es_anfitrion: !!data.es_anfitrion,
-        },
-      );
+      const response = await api.post("/auth/register", {
+        nombre: data.nombre,
+        apellido: data.apellido,
+        email: data.email,
+        telefono: data.telefono || null,
+        pass: data.password,
+        es_anfitrion: !!data.es_anfitrion,
+      });
 
       const usuario = response.data.usuario;
       toast.success("Cuenta creada exitosamente");

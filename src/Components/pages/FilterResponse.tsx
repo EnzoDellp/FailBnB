@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import api from "../../api/axiosConfig";
 import { toast } from "react-toastify";
@@ -20,7 +20,7 @@ function FilterResponse() {
   useEffect(() => {
     const fetchResultados = async () => {
       if (!ubicacion || !checkin || !checkout || !viajeros) {
-        toast.error("Faltan campos para realizar la búsqueda.");
+        toast.error("Faltan campos para realizar la bÃºsqueda.");
         setLoading(false);
         return;
       }
@@ -32,17 +32,14 @@ function FilterResponse() {
       }
 
       try {
-        const res = await api.get<PropiedadFromDB[]>(
-          "http://localhost:3000/api/propiedades/filtrar",
-          {
-            params: {
-              ubicacion,
-              checkin,
-              checkout,
-              viajeros,
-            },
+        const res = await api.get<PropiedadFromDB[]>("/propiedades/filtrar", {
+          params: {
+            ubicacion,
+            checkin,
+            checkout,
+            viajeros,
           },
-        );
+        });
         setResultados(res.data);
       } catch (error) {
         toast.error("Error al obtener propiedades filtradas");
@@ -83,7 +80,7 @@ function FilterResponse() {
                 imagen={prop.portada}
                 precio={prop.precio_noche}
                 camas={prop.cant_habitaciones}
-                banios={prop.cant_banios || prop.cant_banios}
+                banios={prop.cant_baños}
                 calificacion={5}
                 popular={false}
               />

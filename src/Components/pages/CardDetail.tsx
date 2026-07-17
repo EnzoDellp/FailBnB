@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
 import Header from "../Header";
 import { toast } from "react-toastify";
+import type { CardDetailProps } from "../../types";
 
 function CardDetail() {
   const { id } = useParams<{ id: string }>();
-  const [propiedad, setPropiedad] = useState<any>(null);
+  const [propiedad, setPropiedad] = useState<CardDetailProps | null>(null);
   const [usuario, setUsuario] = useState<{ nombre: string } | null>(null);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ function CardDetail() {
     if (!id) return;
 
     api
-      .get(`http://localhost:3000/api/propiedades/${id}`)
+      .get(`/propiedades/${id}`)
       .then((res) => setPropiedad(res.data))
       .catch((err) => console.error("Error al obtener propiedad:", err));
   }, [id]);

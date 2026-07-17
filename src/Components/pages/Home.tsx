@@ -1,4 +1,4 @@
-import Card from "../../Components/Card";
+﻿import Card from "../../Components/Card";
 // import Carruse from "./Components/Carruse";
 import Header from "../../Components/Header";
 import Hero from "../../Components/Hero";
@@ -12,7 +12,7 @@ function App() {
   const heroImages = ["mardel.jpg", "depa2.jpg"];
   useEffect(() => {
     api
-      .get("http://localhost:3000/api/propiedades")
+      .get("/propiedades")
       .then((response) => {
         setPropiedades(response.data);
       })
@@ -23,7 +23,7 @@ function App() {
 
   useEffect(() => {
     api
-      .get("http://localhost:3000/api/propiedades")
+      .get("/propiedades")
       .then((response) => {
         setPropiedades(response.data);
       })
@@ -60,7 +60,7 @@ function App() {
                 titulo={propiedad.titulo}
                 precio={propiedad.precio_noche}
                 camas={propiedad.cant_habitaciones}
-                banios={propiedad.cant_banios}
+                banios={propiedad.cant_baños}
                 ubicacion={propiedad.ubicacion}
                 calificacion={4.5}
                 imagen={propiedad.portada}

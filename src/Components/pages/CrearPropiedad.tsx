@@ -37,7 +37,7 @@ function CrearPropiedad() {
         imagenes,
       };
 
-      await api.post("http://localhost:3000/api/propiedades", payload);
+      await api.post("/propiedades", payload);
       toast.success("Propiedad creada exitosamente");
       navigate("/");
     } catch (error: any) {
