@@ -17,3 +17,5 @@ jobs:
       - run: npm install
 
       - run: npm test
+        env:
+          JWT_SECRET: test_secret
