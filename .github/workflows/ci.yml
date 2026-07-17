@@ -1,5 +1,5 @@
 name: CI
-
+run-name: "CI · ${{ github.ref_name }} · ${{ github.actor }}"
 on:
   push:
     branches: [main, dev-enzo]
