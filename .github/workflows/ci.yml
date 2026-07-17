@@ -1,0 +1,21 @@
+name: CI
+run-name: "CI · ${{ github.ref_name }} · ${{ github.actor }}"
+on:
+  push:
+    branches: [main, dev-enzo]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - run: npm install
+
+      - run: npm test
+        env:
+          JWT_SECRET: test_secret

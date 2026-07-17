@@ -2,10 +2,10 @@ jest.mock("../models/db");
 const request = require("supertest");
 const app = require("../app");
 const jwt = require("jsonwebtoken");
+const db = require("../models/db");
 
 describe("Validate JWT", () => {
   test("JWT working only with his real owner", async () => {
-    const db = require("../models/db");
     db.query.mockImplementation((sql, params, callback) => {
       callback(null, { affectedRows: 0 });
     });
@@ -16,6 +16,6 @@ describe("Validate JWT", () => {
       .set("Authorization", "Bearer " + token);
     expect(res.status).toBe(403);
   });
-  const db = require("../models/db");
-  afeterAll(() => db.end());
+
+  afterAll(() => db.end());
 });
