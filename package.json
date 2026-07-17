@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "dev:server": "nodemon backend/server.js",
     "dev:all": "concurrently \"npm run dev\" \"npm run dev:server\"",
-    "test": "jest"
+    "test": "jest",
+    "start": "node backend/server.js"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
