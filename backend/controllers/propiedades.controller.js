@@ -70,7 +70,7 @@ const createPropiedad = async (req, res, next) => {
     descripcion,
     direccion,
     cant_habitaciones,
-    cant_baños,
+    cant_banos,
     capacidad_max,
     precio_noche,
     ubicacion,
@@ -92,7 +92,7 @@ const createPropiedad = async (req, res, next) => {
     const urls = imageUrls.map((result) => result.secure_url);
 
     const insertPropQuery = `
-      INSERT INTO propiedades (id_usuario, titulo, descripcion, direccion, cant_habitaciones, cant_baños, capacidad_max, precio_noche, ubicacion)
+      INSERT INTO propiedades (id_usuario, titulo, descripcion, direccion, cant_habitaciones, cant_banos, capacidad_max, precio_noche, ubicacion)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
@@ -104,7 +104,7 @@ const createPropiedad = async (req, res, next) => {
         descripcion,
         direccion,
         cant_habitaciones,
-        cant_baños,
+        cant_banos,
         capacidad_max,
         precio_noche,
         ubicacion,
@@ -164,7 +164,7 @@ const updatePropiedad = (req, res, next) => {
     descripcion,
     direccion,
     cant_habitaciones,
-    cant_baños,
+    cant_banos,
     capacidad_max,
     precio_noche,
     ubicacion,
@@ -172,7 +172,7 @@ const updatePropiedad = (req, res, next) => {
 
   const query = `
     UPDATE propiedades SET
-    titulo = ?, descripcion = ?, direccion = ?, cant_habitaciones = ?, cant_baños = ?, capacidad_max = ?, precio_noche = ?, ubicacion = ?
+    titulo = ?, descripcion = ?, direccion = ?, cant_habitaciones = ?, cant_banos = ?, capacidad_max = ?, precio_noche = ?, ubicacion = ?
     WHERE id = ? AND id_usuario=?
   `;
 
@@ -183,7 +183,7 @@ const updatePropiedad = (req, res, next) => {
       descripcion,
       direccion,
       cant_habitaciones,
-      cant_baños,
+      cant_banos,
       capacidad_max,
       precio_noche,
       ubicacion,
