@@ -80,7 +80,7 @@ function FilterResponse() {
                 imagen={prop.portada}
                 precio={prop.precio_noche}
                 camas={prop.cant_habitaciones}
-                banios={prop.cant_baños}
+                banios={prop.cant_banos}
                 calificacion={5}
                 popular={false}
               />

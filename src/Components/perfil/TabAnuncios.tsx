@@ -190,11 +190,11 @@ export default function TabAnuncios() {
               <input
                 type="number"
                 className="w-full border rounded px-3 py-1"
-                value={anuncioSelecionado.cant_baños}
+                value={anuncioSelecionado.cant_banos}
                 onChange={(e) =>
                   setAnuncioSelecionado({
                     ...anuncioSelecionado,
-                    cant_baños: Number(e.target.value),
+                    cant_banos: Number(e.target.value),
                   })
                 }
                 placeholder="Cantidad de Baños"

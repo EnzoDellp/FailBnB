@@ -60,7 +60,7 @@ function App() {
                 titulo={propiedad.titulo}
                 precio={propiedad.precio_noche}
                 camas={propiedad.cant_habitaciones}
-                banios={propiedad.cant_baños}
+                banios={propiedad.cant_banos}
                 ubicacion={propiedad.ubicacion}
                 calificacion={4.5}
                 imagen={propiedad.portada}

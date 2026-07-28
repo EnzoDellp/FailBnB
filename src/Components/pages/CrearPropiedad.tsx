@@ -178,12 +178,12 @@ function CrearPropiedad() {
                 </label>
                 <input
                   type="number"
-                  {...register("cant_baños", { required: true, min: 1 })}
+                  {...register("cant_banos", { required: true, min: 1 })}
                   className="w-full mt-1 border border-gray-300 px-3 py-2 rounded-md"
                 />
-                {errors.cant_baños && (
+                {errors.cant_banos && (
                   <p className="text-red-600 text-sm">
-                    {errors.cant_baños.message}
+                    {errors.cant_banos.message}
                   </p>
                 )}
               </div>

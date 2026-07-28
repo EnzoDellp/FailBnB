@@ -45,7 +45,7 @@ function CardDetail() {
     titulo,
     descripcion,
     cant_habitaciones,
-    cant_baños,
+    cant_banos,
     capacidad_max,
     precio_noche,
     imagenes = [],
@@ -104,7 +104,7 @@ function CardDetail() {
           <h2 className="text-2xl font-semibold mb-2">{titulo}</h2>
           <p className="text-gray-600 mb-1">
             {capacidad_max} huéspedes &bull; {cant_habitaciones} habitaciones
-            &bull; {cant_baños} baños
+            &bull; {cant_banos} baños
           </p>
           <p className="text-gray-700 leading-relaxed break-words">
             {descripcion}

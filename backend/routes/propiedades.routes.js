@@ -32,7 +32,7 @@ router.post(
       .withMessage(
         "La cantidad de habitaciones es requerida y debe tener como minimo 1",
       ),
-    body("cant_baños")
+    body("cant_banos")
       .notEmpty()
       .withMessage("La cantidad de baños es requerida")
       .isInt({ min: 1 }),
