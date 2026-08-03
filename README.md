@@ -1,20 +1,34 @@
-# Proyecto Final – Prácticas Profesionales 4
+# FailBnB
 
-<img src="public/logo.png" alt="Logo del Proyecto" width="200"/>
+![Logo](public/logo.png)
 
-## Autores
+Proyecto personal — aplicación full stack inspirada en Airbnb.
 
-- **Enzo Dellape**
-- **Federico Gastaldi**
+🔗 [Ver demo en vivo](https://failbnb.netlify.app)
 
-## Tecnologías Utilizadas
+---
 
-Este proyecto fue desarrollado utilizando las siguientes tecnologías:
+## Stack
 
-- **React**
-- **Node.js**
-- **MySQL**
+**Frontend:** React 19 + TypeScript, Vite, React Router DOM, Tailwind CSS, Axios  
+**Backend:** Node.js + Express 5, MySQL, JWT, bcrypt, Cloudinary  
+**Testing:** Jest + Supertest  
+**DevOps:** GitHub Actions (CI), Railway, Netlify, Docker  
 
-## Descripción
+---
 
-Este repositorio contiene el proyecto final correspondiente a la materia **Prácticas Profesionales 4**, desarrollado con un enfoque full stack utilizando React para el frontend, Node.js para el backend y MySQL como sistema de gestión de bases de datos.
+## Funcionalidades
+
+- Registro y login con autenticación JWT
+- Roles diferenciados: huésped y anfitrión
+- Listado y filtrado de propiedades
+- Galería de imágenes con almacenamiento en Cloudinary
+- Sistema de reservas con validación de fechas y disponibilidad
+- Panel de perfil con gestión de reservas y anuncios propios
+- CRUD completo de propiedades con control de ownership
+
+---
+
+## Autor
+
+**Enzo Dellape** — [GitHub](https://github.com/EnzoDellp)
